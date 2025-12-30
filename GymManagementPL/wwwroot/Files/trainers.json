@@ -1,0 +1,54 @@
+[
+  {
+    "Name": "Ahmed Hassan",
+    "Email": "ahmed.hassan@gym.com",
+    "Phone": "01012345678",
+    "DateOfBirth": "1990-05-15",
+    "Gender": "Male",
+    "Specialist": "General",
+    "Address": {
+      "BuildingNumber": 15,
+      "Street": "Nile Street",
+      "City": "Cairo"
+    }
+  },
+  {
+    "Name": "Sara Mohamed",
+    "Email": "sara.mohamed@gym.com",
+    "Phone": "01123456789",
+    "DateOfBirth": "1992-08-20",
+    "Gender": "Female",
+    "Specialist": "Yoga",
+    "Address": {
+      "BuildingNumber": 25,
+      "Street": "Tahrir Street",
+      "City": "Giza"
+    }
+  },
+  {
+    "Name": "Omar Ali",
+    "Email": "omar.ali@gym.com",
+    "Phone": "01234567890",
+    "DateOfBirth": "1988-03-10",
+    "Gender": "Male",
+    "Specialist": "Boxing",
+    "Address": {
+      "BuildingNumber": 8,
+      "Street": "Pyramids Road",
+      "City": "Giza"
+    }
+  },
+  {
+    "Name": "Nour Ibrahim",
+    "Email": "nour.ibrahim@gym.com",
+    "Phone": "01512345678",
+    "DateOfBirth": "1995-11-25",
+    "Gender": "Female",
+    "Specialist": "Crossfit",
+    "Address": {
+      "BuildingNumber": 42,
+      "Street": "Corniche Road",
+      "City": "Alexandria"
+    }
+  }
+]

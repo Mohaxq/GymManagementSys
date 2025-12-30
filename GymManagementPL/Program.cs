@@ -1,7 +1,11 @@
+using GymManagementBLL;
+using GymManagementBLL.Services.Classes;
+using GymManagementBLL.Services.InterFaces;
 using GymManagementDAL.Data.Context;
 using GymManagementDAL.Data.DataSeeding;
 using GymManagementDAL.Repositories.Classes;
 using GymManagementDAL.Repositories.Interfaces;
+using GymManagmentBLL;
 using Microsoft.EntityFrameworkCore;
 namespace GymManagementPL
 {
@@ -21,6 +25,12 @@ namespace GymManagementPL
             }); 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<ISessionReposistory, SessionRepository>();
+            builder.Services.AddAutoMapper(x=>x.AddProfile(new MappingProfile()));
+            builder.Services.AddScoped<IAnalysisService, AnalysisService>();
+            builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<IPlanService, PlanService>();
+            builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<ITrainerService, TrainerService>();
 
             var app = builder.Build();
             #region Data-Seeding
