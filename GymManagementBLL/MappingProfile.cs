@@ -28,18 +28,25 @@ namespace GymManagmentBLL
                     BuildingNumber = src.BuildingNumber,
                     Street = src.Street,
                     City = src.City
-                }));
+                }))
+                .ForMember(dest => dest.Specialist, opt => opt.MapFrom(src => src.Specialties));
             CreateMap<Trainer, TrainerViewModel>()
-                            .ForMember(dest => dest.Address,
-                            opt => opt.MapFrom(src => $"{src.Address.BuildingNumber} - {src.Address.Street} - {src.Address.City}"));
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.specialization, opt => opt.MapFrom(src => src.Specialist.ToString()))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.ToShortDateString()))
+                .ForMember(dest => dest.Address,
+                    opt => opt.MapFrom(src => $"{src.Address.BuildingNumber} - {src.Address.Street} - {src.Address.City}"));
 
             CreateMap<Trainer, TrainerToUpdateViewModel>()
                 .ForMember(dist => dist.Street, opt => opt.MapFrom(src => src.Address.Street))
                 .ForMember(dist => dist.City, opt => opt.MapFrom(src => src.Address.City))
-                .ForMember(dist => dist.BuildingNumber, opt => opt.MapFrom(src => src.Address.BuildingNumber));
+                .ForMember(dist => dist.BuildingNumber, opt => opt.MapFrom(src => src.Address.BuildingNumber))
+                .ForMember(dist => dist.Specialties, opt => opt.MapFrom(src => src.Specialist));
 
             CreateMap<TrainerToUpdateViewModel, Trainer>()
             .ForMember(dest => dest.Name, opt => opt.Ignore())
+            .ForMember(dest => dest.Specialist, opt => opt.MapFrom(src => src.Specialties))
             .AfterMap((src, dest) =>
             {
                 dest.Address.BuildingNumber = src.BuildingNumber;
@@ -71,7 +78,8 @@ namespace GymManagmentBLL
                       BuildingNumber = src.BuildingNumber,
                       City = src.City,
                       Street = src.Street
-                  })).ForMember(dest => dest.HealthRecord, opt => opt.MapFrom(src => src.HealthRecord));
+                  })).ForMember(dest => dest.HealthRecord, opt => opt.MapFrom(src => src.HealthRecord))
+                  .ForMember(dest => dest.Photo, opt => opt.Ignore()); // Photo is handled separately via AttachmentService
 
 
             CreateMap<HealthRecordViewModel, HealthRecord>().ReverseMap();

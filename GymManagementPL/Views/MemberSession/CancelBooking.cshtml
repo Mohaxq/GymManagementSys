@@ -1,0 +1,46 @@
+@model GymManagementBLL.ViewModels.SessionScheduleViewModel.CancelBookingViewModel
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Cancel Booking
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        Are you sure you want to cancel this booking?
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Member:</dt>
+                        <dd class="col-sm-8">@Model.MemberName</dd>
+
+                        <dt class="col-sm-4">Session:</dt>
+                        <dd class="col-sm-8">@Model.SessionName</dd>
+
+                        <dt class="col-sm-4">Session Date:</dt>
+                        <dd class="col-sm-8">@Model.SessionStartDate.ToString("MMM dd, yyyy hh:mm tt")</dd>
+                    </dl>
+
+                    <form asp-action="CancelBookingConfirmed" method="post">
+                        <input type="hidden" name="sessionId" value="@Model.SessionId" />
+                        <input type="hidden" name="memberId" value="@Model.MemberId" />
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="GetMembersForUpcomingSession" asp-route-sessionId="@Model.SessionId" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle me-1"></i> Confirm Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

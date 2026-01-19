@@ -1,0 +1,77 @@
+@model AddMemberToSessionViewModel
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-plus me-2"></i>Add Member to Session
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Book a member for this session
+                    </div>
+
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4">Session:</dt>
+                        <dd class="col-sm-8">@Model.SessionName</dd>
+
+                        <dt class="col-sm-4">Trainer:</dt>
+                        <dd class="col-sm-8">@Model.TrainerName</dd>
+
+                        <dt class="col-sm-4">Start Date:</dt>
+                        <dd class="col-sm-8">@Model.StartDate.ToString("MMM dd, yyyy hh:mm tt")</dd>
+
+                        <dt class="col-sm-4">Available Spots:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-success">@Model.AvailableSpots available</span>
+                        </dd>
+                    </dl>
+
+                    <form asp-action="AddMember" method="post">
+                        <input type="hidden" asp-for="SessionId" />
+                        <input type="hidden" asp-for="SessionName" />
+                        <input type="hidden" asp-for="TrainerName" />
+                        <input type="hidden" asp-for="StartDate" />
+                        <input type="hidden" asp-for="AvailableSpots" />
+
+                        <div class="mb-4">
+                            <label asp-for="MemberId" class="form-label fw-semibold">
+                                Select Member <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="MemberId" asp-items="@ViewBag.Members" class="form-select">
+                                <option value="">-- Select a Member --</option>
+                            </select>
+                            <span asp-validation-for="MemberId" class="text-danger"></span>
+                            <small class="text-muted">Only members not already booked for this session are shown</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="GetMembersForUpcomingSession" asp-route-sessionId="@Model.SessionId" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-person-plus me-1"></i> Add Member
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

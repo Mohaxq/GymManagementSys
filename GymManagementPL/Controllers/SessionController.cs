@@ -66,10 +66,29 @@ namespace GymManagementPL.Controllers
                 TempData["ErrorMessage"] = "Invalid session ID.";
                 return RedirectToAction("Index");
             }
-            var session = _sessionService.GetSessionById(id);
-            if (session == null)
+            
+            // First check if session exists
+            var sessionDetails = _sessionService.GetSessionById(id);
+            if (sessionDetails == null)
             {
                 TempData["ErrorMessage"] = "Session not found.";
+                return RedirectToAction("Index");
+            }
+            
+            // Then try to get it for update (with business rule validation)
+            var session = _sessionService.GetSessionForUpdate(id);
+            if (session == null)
+            {
+                // Session exists but cannot be edited - provide specific reason
+                
+                if (sessionDetails.Capacity - sessionDetails.AvailableSpots > 0)
+                {
+                    TempData["ErrorMessage"] = "Cannot edit a session that has active bookings.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Session cannot be edited at this time.";
+                }
                 return RedirectToAction("Index");
             }
             LoadDropDownData();

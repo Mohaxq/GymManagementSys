@@ -1,5 +1,10 @@
 ﻿@model IEnumerable<MemberViewModels>
 
+
+    @{
+    ViewData["Title"] = "Members List";
+    }
+
 @if(@TempData["Success"] is not null)
 {
   <div id="Alert" class="alert alert-success alert-dismissible fade show">
@@ -48,11 +53,11 @@
                                             <span class="avatar">
                                                 @if (string.IsNullOrEmpty(member.Photo)){
                                                     <img src="~/images/User.jpg" alt="Default Avatar" class="rounded-circle"
-                                                    style="width: 40px; height: 40px;" />
+                                                    style="width: 40px; height: 40px; object-fit: cover;" />
                                                 }
                                                 else{
-                                                    <img src="~/images/@member.Photo" alt="Default Avatar" class="rounded-circle"
-                                                         style="width: 40px; height: 40px;" />
+                                                    <img src="~/images/Members/@member.Photo" alt="Member Avatar" class="rounded-circle"
+                                                         style="width: 40px; height: 40px; object-fit: cover;" />
                                                 }
                                             </span>
                                         </td>

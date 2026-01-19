@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GymManagementBLL.Services.InterFaces;
+using GymManagementBLL.Services.InterFaces.AttachmentService;
 using GymManagementBLL.ViewModels.MemberViewModel;
 using GymManagementDAL.Entities;
 using GymManagementDAL.Repositories.Interfaces;
@@ -15,11 +16,13 @@ namespace GymManagementBLL.Services.Classes
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAttachmentService _attachmentService;
 
-        public MemberService(IUnitOfWork unitOfWork,IMapper mapper)
+        public MemberService(IUnitOfWork unitOfWork, IMapper mapper, IAttachmentService attachmentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _attachmentService = attachmentService;
         }
 
         public bool CreateMember(CreateMemberViewModel createMemberViewModel)
@@ -32,6 +35,14 @@ namespace GymManagementBLL.Services.Classes
                 }
 
                 var memberMapped = _mapper.Map<Member>(createMemberViewModel);
+
+                // Handle photo upload
+                if (createMemberViewModel.PhotoFile != null)
+                {
+                    var photoName = _attachmentService.Upload("Members", createMemberViewModel.PhotoFile);
+                    memberMapped.Photo = photoName;
+                }
+
                 _unitOfWork.GetRepository<Member>().Add(memberMapped);
                 return _unitOfWork.SaveChanges() > 0;
             }
@@ -147,6 +158,13 @@ namespace GymManagementBLL.Services.Classes
                         _unitOfWork.GetRepository<MemberShip>().Delete(ms);
                     }
                 }
+
+                // Delete member photo if exists
+                if (!string.IsNullOrEmpty(member.Photo))
+                {
+                    _attachmentService.Delete("Members", member.Photo);
+                }
+
                 _unitOfWork.GetRepository<Member>().Delete(member);
                 return _unitOfWork.SaveChanges() > 0;
             }

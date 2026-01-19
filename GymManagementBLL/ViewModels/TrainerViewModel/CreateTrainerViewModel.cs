@@ -30,6 +30,7 @@ namespace GymManagmentBLL.ViewModels.TrainerViewModel
         public DateOnly DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Gender is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid gender")]
         public Gender Gender { get; set; }
 
         [Required(ErrorMessage = "Building Number Is Required")]
@@ -47,7 +48,7 @@ namespace GymManagmentBLL.ViewModels.TrainerViewModel
         public string Street { get; set; } = null!;
 
         [Required(ErrorMessage = "Specialty is Required")]
-        [EnumDataType(typeof(Specialist))]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid specialization")]
         public Specialist Specialties { get; set; }
     }
 }

@@ -1,12 +1,18 @@
 using GymManagementBLL;
 using GymManagementBLL.Services.Classes;
+using GymManagementBLL.Services.Classes.AttachmentService;
 using GymManagementBLL.Services.InterFaces;
+using GymManagementBLL.Services.InterFaces.AttachmentService;
 using GymManagementDAL.Data.Context;
 using GymManagementDAL.Data.DataSeeding;
+using GymManagementDAL.Entities;
 using GymManagementDAL.Repositories.Classes;
 using GymManagementDAL.Repositories.Interfaces;
 using GymManagmentBLL;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
 namespace GymManagementPL
 {
     public class Program
@@ -22,6 +28,8 @@ namespace GymManagementPL
                 //option.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
                 //option.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                // Suppress EF Core 9 pending model changes warning to allow migrations to run
+                option.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
             }); 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<ISessionReposistory, SessionRepository>();
@@ -31,17 +39,34 @@ namespace GymManagementPL
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<ITrainerService, TrainerService>();
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IMemberShipService, MemberShipService>();
+            builder.Services.AddScoped<IMemberSessionService, MemberSessionService>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config=>
+            {
+                config.User.RequireUniqueEmail= true;
+            }
+            ).AddEntityFrameworkStores<GymDbContext>();
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/Login";
+                config.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
             var app = builder.Build();
             #region Data-Seeding
             using var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+            var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var pendingMigrations = dbContext.Database.GetPendingMigrations();
             if (pendingMigrations != null && pendingMigrations.Any())
             {
                 dbContext.Database.Migrate();
             }
             GymDbContextSeeding.SeedData(dbContext, app.Environment.ContentRootPath);
+            IdnetityDbContextSeeding.SeedData(RoleManager, UserManager);
             #endregion
 
             // Configure the HTTP request pipeline.
@@ -54,13 +79,14 @@ namespace GymManagementPL
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Account}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

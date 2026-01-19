@@ -27,7 +27,7 @@ namespace GymManagementDAL.Data.Configuration
             {
                 addressBuilder.Property(a => a.Street).HasColumnType("varchar").HasMaxLength(100).HasColumnName("Street");
                 addressBuilder.Property(a => a.City).HasColumnType("varchar").HasMaxLength(50).HasColumnName("City");
-                addressBuilder.Property(a => a.BuildingNumber).HasColumnType("varchar").HasMaxLength(50).HasColumnName("BuldingNumber");
+                addressBuilder.Property(a => a.BuildingNumber).HasColumnName("BuildingNumber");
                 
             });
         }

@@ -101,17 +101,29 @@ namespace GymManagementBLL.Services.Classes
         private bool IsSessionAvilableToDelete(Session session)
         {
             if (session is null) return false;
-            if (session.startDate <= DateTime.Now && session.EndDate>DateTime.Now)
+            
+            // Cannot delete ongoing sessions (sessions that have started but not yet ended)
+            var now = DateTime.Now;
+            if (session.startDate <= now && session.EndDate > now)
             {
                 return false;
             }
-            if(session.startDate>DateTime.Now)
-            {
-                return false;
-            }
-            var HasActiveBooking = _unitOfWork.sessionReposistory.GetCountBookedSpots(session.Id) > 0;
-            if (HasActiveBooking) return false;
+            
+            // Can delete upcoming sessions (not started yet) and completed sessions
             return true;
+        }
+
+        private void DeleteSessionBookings(int sessionId)
+        {
+            var bookings = _unitOfWork.GetRepository<MemberSession>()
+                .GetAll()
+                .Where(ms => ms.SessionId == sessionId)
+                .ToList();
+
+            foreach (var booking in bookings)
+            {
+                _unitOfWork.GetRepository<MemberSession>().Delete(booking);
+            }
         }
         #endregion
         public UpdateSessionViewModel? GetSessionForUpdate(int id)
@@ -163,6 +175,11 @@ namespace GymManagementBLL.Services.Classes
                 {
                     return false;
                 }
+                
+                // Delete all bookings for this session first
+                DeleteSessionBookings(id);
+                
+                // Then delete the session
                 _unitOfWork.GetRepository<Session>().Delete(session!);
                 return _unitOfWork.SaveChanges() > 0;
 

@@ -1,0 +1,62 @@
+@model GymManagementBLL.ViewModels.MemberShipViewModel.MemberShipViewModel
+
+@{
+    ViewData["Title"] = "Cancel Membership";
+}
+
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card p-5 shadow text-center">
+                        <p class="fs-3 text-primary-color mb-4">Are you sure you want to cancel this membership?</p>
+
+                        <div class="mb-4 text-start">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block mb-1">Member</small>
+                                        <strong>@Model.MemberName</strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block mb-1">Plan</small>
+                                        <strong>@Model.PlanName</strong>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block mb-1">End Date</small>
+                                        <strong>@Model.EndDate.ToString("d")</strong>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <small class="text-muted d-block mb-1">Status</small>
+                                        <span class="badge bg-success">@Model.Status</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning text-start" role="alert">
+                            <strong>Warning!</strong> This action cannot be undone. The membership will be permanently deleted.
+                        </div>
+
+                        <form method="post" asp-action="CancelConfirmed" asp-controller="MemberShip">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="memberId" value="@Model.MemberId" />
+                            <input type="hidden" name="planId" value="@Model.PlanId" />
+                            <div class="buttons d-flex justify-content-between gap-3">
+                                <a asp-controller="MemberShip" asp-action="Index" class="btn-outline flex-fill">NO</a>
+                                <button type="submit" class="btn-fill flex-fill">Yes, Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

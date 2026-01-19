@@ -1,0 +1,76 @@
+@model GymManagementBLL.ViewModels.MemberShipViewModel.MemberShipViewModel
+
+@{
+    ViewData["Title"] = "Membership Details";
+}
+
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card card-details border-0 p-2 shadow">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h4 class="mb-0"><i class="bi bi-card-checklist me-2"></i>Membership Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mt-4 text-start">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="p-3 bg-light rounded">
+                                            <small class="text-muted d-block mb-1">Member Name</small>
+                                            <strong>@Model.MemberName</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="p-3 bg-light rounded">
+                                            <small class="text-muted d-block mb-1">Plan Name</small>
+                                            <strong>@Model.PlanName</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 bg-light rounded">
+                                            <small class="text-muted d-block mb-1">Price</small>
+                                            <strong>$@Model.PlanPrice.ToString("F2")</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 bg-light rounded">
+                                            <small class="text-muted d-block mb-1">Status</small>
+                                            @{
+                                                var statusClass = Model.Status == "Active" ? "bg-success" : "bg-danger";
+                                            }
+                                            <span class="badge @statusClass">@Model.Status</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 bg-light rounded">
+                                            <small class="text-muted d-block mb-1">Start Date</small>
+                                            <strong>@Model.StartDate.ToString("d")</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 bg-light rounded">
+                                            <small class="text-muted d-block mb-1">End Date</small>
+                                            <strong>@Model.EndDate.ToString("d")</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between gap-2 px-3 pb-3">
+                            <a asp-controller="MemberShip" asp-action="Index" class="btn btn-fill flex-fill">Back to List</a>
+                            @if (Model.CanCancel)
+                            {
+                                <a asp-controller="MemberShip" asp-action="Cancel" 
+                                   asp-route-memberId="@Model.MemberId" asp-route-planId="@Model.PlanId" 
+                                   class="btn btn-danger flex-fill">Cancel Membership</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

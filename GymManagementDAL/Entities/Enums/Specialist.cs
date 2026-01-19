@@ -8,6 +8,7 @@ namespace GymManagementDAL.Entities.Enums
 {
     public enum Specialist
     {
+        None = 0,
         General = 1,
         Yoga,
         Boxing,

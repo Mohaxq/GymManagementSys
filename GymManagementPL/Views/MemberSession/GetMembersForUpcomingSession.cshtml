@@ -1,0 +1,127 @@
+@model GymManagementBLL.ViewModels.SessionScheduleViewModel.SessionMembersListViewModel
+
+<div class="container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <header class="d-flex justify-content-between mt-5 mb-4 align-items-center">
+        <div>
+            <h2 class="text-primary-color mb-0">@Model.SessionName - Booked Members</h2>
+            <p class="text-muted">
+                <i class="bi bi-person-circle me-1"></i>Trainer: @Model.TrainerName |
+                <i class="bi bi-calendar3 me-1"></i>@Model.StartDate.ToString("MMM dd, yyyy") |
+                <i class="bi bi-clock me-1"></i>@Model.StartDate.ToString("hh:mm tt") - @Model.EndDate.ToString("hh:mm tt") |
+                <i class="bi bi-people me-1"></i>Capacity: @(Model.Capacity - Model.AvailableSpots)/@Model.Capacity
+            </p>
+        </div>
+        <div>
+            @if (Model.CanAddMore)
+            {
+                <a asp-action="AddMember" asp-route-sessionId="@Model.SessionId" class="btn btn-success me-2">
+                    <i class="bi bi-person-plus me-1"></i> Add Member
+                </a>
+            }
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Sessions
+            </a>
+        </div>
+    </header>
+
+    @if (Model.CanAddMore)
+    {
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>@Model.AvailableSpots</strong> spots available. You can add more members to this session.
+        </div>
+    }
+    else if (Model.AvailableSpots == 0)
+    {
+        <div class="alert alert-warning mb-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            This session is fully booked.
+        </div>
+    }
+
+    @if (Model.Members.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-people me-2"></i>Booked Members (@Model.Members.Count())
+                </h5>
+                <span class="badge bg-light text-dark">@Model.AvailableSpots spots remaining</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Photo</th>
+                                <th>Member Name</th>
+                                <th>Booked At</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var member in Model.Members)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(member.MemberPhoto))
+                                        {
+                                            <img src="~/Images/Members/@member.MemberPhoto" alt="@member.MemberName" 
+                                                 class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="bi bi-person text-white"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="align-middle">@member.MemberName</td>
+                                    <td class="align-middle">@member.BookedAt.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                    <td class="text-center align-middle">
+                                        <a asp-action="CancelBooking" 
+                                           asp-route-sessionId="@Model.SessionId" 
+                                           asp-route-memberId="@member.MemberId"
+                                           class="btn btn-danger btn-sm">
+                                            <i class="bi bi-x-circle me-1"></i> Cancel Booking
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-people display-1 text-muted"></i>
+            <h4 class="mt-3 text-muted">No Members Booked</h4>
+            <p class="text-muted">No members have booked this session yet</p>
+            @if (Model.CanAddMore)
+            {
+                <a asp-action="AddMember" asp-route-sessionId="@Model.SessionId" class="btn btn-success mt-3">
+                    <i class="bi bi-person-plus me-1"></i> Add First Member
+                </a>
+            }
+        </div>
+    }
+</div>
