@@ -51,4 +51,4 @@ The system utilizes a relational database designed for performance and integrity
     ```
 
 ---
-Developed by **Mohamed Raafat** – [LinkedIn]((https://www.linkedin.com/in/mohamed-raafat-7b4788247/))
+Developed by **Mohamed Raafat** – [LinkedIn](https://www.linkedin.com/in/mohamed-raafat-7b4788247/)
